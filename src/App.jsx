@@ -10,6 +10,7 @@ import HomePage from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 
 import ProtectedRoute from "./ProtectedRoute";
+import PresetParameter from "./pages/PresetParameter";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -44,6 +45,14 @@ export default function App() {
               element={
                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                   <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/preset"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <PresetParameter />
                 </ProtectedRoute>
               }
             />

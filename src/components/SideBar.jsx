@@ -20,22 +20,25 @@ export default function SideBar({ isAuthenticated, setIsAuthenticated }) {
     <div className="side-bar">
       <ul>
         <li>
-          <a href="/home">配置网络参数</a>
+          <a href="/home">数据参数</a>
         </li>
         <li>
-          <a href="#link1">训练样本数据</a>
+          <a href="/preset">配置网络参数</a>
         </li>
         <li>
-          <a href="#link1">验证样本数据</a>
+          <a href="/">训练样本数据</a>
         </li>
         <li>
-          <a href="#link1">模型构建</a>
+          <a href="/">验证样本数据</a>
         </li>
         <li>
-          <a href="#link1">辅助样本数据</a>
+          <a href="/">模型构建</a>
         </li>
         <li>
-          <a href="#link1">模型预测</a>
+          <a href="/">辅助样本数据</a>
+        </li>
+        <li>
+          <a href="/">模型预测</a>
         </li>
         <li>
           <a
