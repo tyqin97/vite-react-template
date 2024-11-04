@@ -10,7 +10,7 @@ export default function SideBar({ isAuthenticated, setIsAuthenticated }) {
     if (isAuthenticated) {
       window.alert("登出成功！");
       localStorage.removeItem("isAuthenticated");
-
+      localStorage.removeItem("userData");
       setIsAuthenticated((set) => !set);
       navigate("/login");
     }
@@ -20,7 +20,7 @@ export default function SideBar({ isAuthenticated, setIsAuthenticated }) {
     <div className="side-bar">
       <ul>
         <li>
-          <a href="/home">数据参数</a>
+          <a href="/home">主页</a>
         </li>
         <li>
           <a href="/preset">配置网络参数</a>
@@ -45,7 +45,8 @@ export default function SideBar({ isAuthenticated, setIsAuthenticated }) {
             onClick={handleLogout}
             style={{
               color: !isAuthenticated ? "#002060" : "",
-              pointerEvents: !isAuthenticated ? "none" : "auto", // Prevent clicking
+              pointerEvents: !isAuthenticated ? "none" : "",
+              cursor: !isAuthenticated ? "" : "pointer",
             }}
           >
             登出
