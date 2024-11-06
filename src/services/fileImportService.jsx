@@ -41,3 +41,61 @@ export const deleteFile = async (fileId, userId) => {
         throw error.response.data.message;
     }
 }
+
+export const checkFile = async (dbName) => {
+    try {
+        const response = await axiosInstance.post("DBUnit/CheckDBNameExist",
+            new URLSearchParams({
+                dbName: dbName
+            })
+        )
+        return response.data;
+    }
+    catch (error) {
+        throw error.response.data.message;
+    }
+}
+
+export const createDB = async (dbName, fileName, withHeader) => {
+    try {
+        const response = await axiosInstance.post("DBUnit/ConvertFileToDBSimple",
+            new URLSearchParams({
+                FileName: fileName,
+                TableName: dbName,
+                WithHeader: withHeader
+            })
+        )
+        return response.data;
+    }
+    catch (error) {
+        throw error.response.data.message;
+    }
+}
+
+export const getDBByUser = async (userId) => {
+    try {
+        const response = await axiosInstance.post("DBUnit/GetDBByUser",
+            new URLSearchParams({
+                userId: userId
+            })
+        )
+        return response.data;
+    }
+    catch (error) {
+        throw error.response.data.message;
+    }
+}
+
+export const dropTable = async (userId, dbId) => {
+    try {
+        const response = await axiosInstance.post("DBUnit/DropTable",
+            new URLSearchParams({
+                userId: userId,
+                dbId: dbId
+            })
+        )
+    }
+    catch (error) {
+        throw error.response.data.message;
+    }
+}

@@ -6,11 +6,12 @@ import Header from "./components/Header";
 import SideBar from "./components/SideBar";
 import Footer from "./components/Footer";
 
-import HomePage from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 
 import ProtectedRoute from "./ProtectedRoute";
 import PresetParameter from "./pages/PresetParameter";
+import Preprocessing from "./pages/Preprocessing";
+import FileImportPage from "./pages/FileImportPage";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -41,10 +42,18 @@ export default function App() {
               }
             />
             <Route
-              path="/home"
+              path="/file"
               element={
                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                  <HomePage />
+                  <FileImportPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/preprocessing"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <Preprocessing />
                 </ProtectedRoute>
               }
             />

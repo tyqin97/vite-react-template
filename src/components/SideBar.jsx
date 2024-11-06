@@ -20,7 +20,10 @@ export default function SideBar({ isAuthenticated, setIsAuthenticated }) {
     <div className="side-bar">
       <ul>
         <li>
-          <a href="/home">主页</a>
+          <a href="/file">主页</a>
+        </li>
+        <li>
+          <a href="/preprocessing">数据预处理</a>
         </li>
         <li>
           <a href="/preset">配置网络参数</a>

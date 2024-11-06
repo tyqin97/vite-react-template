@@ -1,0 +1,68 @@
+.modal {
+    text-align: center;
+    position: fixed;
+    padding: 50px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(168, 165, 165, 0.877);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.side-by-side {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.side-by-side input[type="checkbox"] {
+    transform: scale(1.5); /* Make checkbox a bit larger */
+    accent-color: #007bff; /* Customize checkbox color */
+}
+
+form input[type="text"] {
+    width: 30%; /* Full-width input */
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding doesn’t exceed width */
+}
+
+.modal-button button {
+    margin:20px;
+    border-radius: 8px;
+    padding: 10px;
+    width:20%;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-button button:hover {
+    background-color: #0056b3;
+}
+
+.modal-button button:disabled {
+    background-color: #cccccc; /* Light gray background */
+    color: #666666; /* Darker gray text */
+    cursor: not-allowed; /* Show "not-allowed" cursor */
+    opacity: 0.6; /* Reduce opacity */
+}
