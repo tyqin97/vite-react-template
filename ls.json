@@ -1,0 +1,9 @@
+{
+    "isAuthenticated" : true,
+    "userData" : {
+        "id":1,
+        "name":"Teow",
+        "email":"yiqin_0515@qq.com",
+        "role":0
+    }
+}
