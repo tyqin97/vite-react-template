@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./Preprocessing.css"
 import { getDBByUser } from "../services/fileImportService";
-import { getTableByDBName, GetTableColumnByDBName } from "../services/preprocessingService";
+import { getTableByDBName, GetTableColumnByDBName, DeleteDataByRowID } from "../services/preprocessingService";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AGTable from "../components/AGTable";
+import ConfirmationDialog from "../components/ComfirmationDialog";
+import AddDataDialog from "../components/AddOneDataDialog";
 
 export default function Preprocessing() {
   const [selectedDB, setSelectedDB] = useState("");
@@ -15,6 +17,12 @@ export default function Preprocessing() {
   const [colDef, setColDef] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isGood, setIsGood] = useState(false);
+  const [isDataDialogOpen, setIsDataDialogOpen] = useState(false);
+  const [colName, setColName] = useState();
+  const [toUpdate, setToUpdate] = useState(false);
+  const [selectedID, setSelectedID] = useState([]);
+  const [isDelete, setIsDelete] = useState(false);
+  // const [gridKey, setGridKey] = useState(0);
 
   useEffect(() => {
     async function fetchList() {
@@ -30,9 +38,44 @@ export default function Preprocessing() {
     fetchList();
   }, [])
 
+  useEffect(() => {
+    if (!toUpdate) {
+      return;
+    }
+    else {
+      // fetchData()
+      // setGridKey(prev => prev + 1);
+      handleLoadingClick()
+      setToUpdate(prev => !prev)
+    }
+  }, [toUpdate])
+
   async function getDbList() {
     const response = await getDBByUser(user.id)
     return response.dbUnits.$values
+  }
+
+  async function fetchData() {
+    const dataResponse = await getTableByDBName(selectedDB);
+    const columnResponse = await GetTableColumnByDBName(selectedDB);
+
+    const rows = dataResponse.res.$values
+    const columns = columnResponse.colName.$values;
+    const columnDefs = columnResponse.colName.$values.map((col) => ({
+      field: col,
+      headerName: col,
+      flex:1.0
+    }))
+    const formattedRowData = rows.map((row) => {
+      const values = row["$values"];
+      return columns.reduce((acc, col, index) => {
+        acc[col] = values[index];
+        return acc;
+      }, {})
+    })
+
+    setColDef(columnDefs)
+    setRowData(formattedRowData)
   }
 
   async function handleSelectedDBChange(event) {
@@ -66,7 +109,7 @@ export default function Preprocessing() {
         }, {})
       })
 
-      setColDef(columnDefs)
+      setColDef([{headerName: "Select", checkboxSelection: true, flex:0.4}, ...columnDefs])
       setRowData(formattedRowData)
       
       toast.success(`加载数据库 ${selectedDB} 完成。`)
@@ -82,6 +125,45 @@ export default function Preprocessing() {
     alert(`Configuration button ${selectedDB} clicked!`);
   }
 
+  async function handleAddOneDataClick () {
+    try {
+      const columnResponse = await GetTableColumnByDBName(selectedDB);
+      let resp = columnResponse.colName.$values.slice(1);
+      setColName(resp);
+      setIsDataDialogOpen(prev => !prev);
+    }
+    catch (error) {
+      toast.error(error);
+    }
+  }
+
+  async function handleDataFrmChild (selectedIds) {
+    setSelectedID(selectedIds)
+  }
+
+  async function handleDeleteRowClick () {
+    if (selectedID.length === 0) {
+      toast.error("必须选择至少一行数据！")
+      return;
+    }
+    setIsDelete(prev => !prev);
+  }
+
+  async function handleConfirmDelete () {
+    try {
+      const response = await DeleteDataByRowID(selectedDB, selectedID)
+      const res = `总共删除：${response.count}行数据。`
+      toast.success(String(res))
+      setTimeout(() => {
+        setToUpdate(prev => !prev)
+        setIsDelete(prev => !prev)
+      }, 3500)
+    }
+    catch (error) {
+      toast.error(error.message)
+    }
+  }
+
   return (
     <div className="preprocessing-page">
       <h1>数据预处理</h1>
@@ -94,14 +176,26 @@ export default function Preprocessing() {
                       <option key={item.id} value={item.dbName}>
                           {item.dbName}
                       </option>
-                  ))}
+                  ))
+            }
           </select>
           <button 
-            style={{backgroundColor:'#0bbe47', width:"150px"}}
+            style={{backgroundColor:'#0bbe47', width:"120px"}}
             onClick={handleLoadingClick}
             disabled={isLoading}
           >加载</button>
           {isLoading && <div className="spinner"></div>}
+          <button
+            style={{backgroundColor:'#007bff', width:"120px"}}
+            disabled={!isGood}
+            onClick={handleAddOneDataClick}
+          >添加数据</button>
+          <button
+            style={{backgroundColor: "#eb1f29", width:"120px"}}
+            disabled={!isGood}
+            onClick={handleDeleteRowClick}
+          >删除数据
+          </button>
         </div>
         <div className="right-side">
           <button
@@ -112,14 +206,32 @@ export default function Preprocessing() {
         </div>
       </div>
       <div className="box1">
-        <AGTable 
+        {rowData != null && <AGTable 
           rowData={rowData} 
           colDef={colDef}
           height="63vh"
+          filter={true}
           pageSize={20}
-        />
+          handleDataFrmChild={handleDataFrmChild}
+          // forceRefresh={gridKey}
+        />}
+        {isDataDialogOpen && 
+          <AddDataDialog
+            setClose={setIsDataDialogOpen}
+            colName={colName}
+            tableName={selectedDB}
+            setToUpdate={setToUpdate}
+          />
+        }
+        {isDelete && 
+          <ConfirmationDialog
+            message={`是否确定删除ID : [${selectedID.join(",")}]（无法撤销）`}
+            onConfirm={handleConfirmDelete}
+            onCancel={() => {setIsDelete(prev => !prev)}}
+          />
+        }
       </div>
-      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />
+      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" clearOnClick={true}/>
     </div>
   );
 }
