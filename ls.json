@@ -5,5 +5,33 @@
         "name":"Teow",
         "email":"yiqin_0515@qq.com",
         "role":0
+    },
+    "pdetail" : {
+        "$id":"1",
+        "id":1,
+        "xStandardized":true,
+        "zscoreParam":"{\"MeanCol5\":5.626913737824169e+002,\"MeanCol6\":2.303971705373865e+001,\"MeanCol7\":1.830652809791659e+000,\"MeanCol8\":4.239166688198289e+002,\"MeanCol9\":1.613068653188955e+002,\"MeanCol10\":2.766268364918499e+000,\"StdDevCol5\":8.546432281155258e+001,\"StdDevCol6\":3.621553180252279e+001,\"StdDevCol7\":9.528708689465164e+000,\"StdDevCol8\":1.850480808382009e+002,\"StdDevCol9\":2.085680318374613e+002,\"StdDevCol10\":1.227581053582606e+000}",
+        "tStandardized":true,
+        "modelParams":{"$id":"2","af":"sigmoid","maxNodes":1000,"maxCandidates":200,"nodePerAdd":1,"minTolerance":0.0001,"lambdas":[0.5,1,2,5,10,20,50,100,200],"regularizations":[0.9,0.99,0.999,0.9999,0.99999]},
+        "trainPercent":70,
+        "validationPercent":15,
+        "testPercent":15,
+        "serializedXCol":"Col5,Col6,Col7,Col8",
+        "serializedTCol":"Col9,Col10",
+        "xList":{"$id":"3","$values":["Col5","Col6","Col7","Col8"]},
+        "tList":{"$id":"4","$values":["Col9","Col10"]},
+        "dbUnitID":6,
+        "dbUnit":{
+            "$id":"5",
+            "id":6,
+            "dbName":"E1",
+            "createDate":"2024-10-16T18:54:18.6732131",
+            "updateDate":"2024-10-16T18:54:18.6732434",
+            "isDeleted":false,
+            "fileImportID":1,
+            "preprocessingDetail":{
+                "$ref":"1"
+                }
+        }
     }
 }

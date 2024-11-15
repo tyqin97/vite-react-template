@@ -54,3 +54,27 @@ export const DeleteDataByRowID = async (tableName, listID) => {
         throw error;
     }
 }
+
+export const CreateOnePD = async (tableName) => {
+    try {
+        const response = await axiosInstance.post("Preprocessing/createOnePD", 
+            new URLSearchParams({
+                dbName: tableName
+            })
+        )
+        return response.data
+    }
+    catch (error) {
+        throw error;
+    }
+}
+
+export const GetDetails = async (tableName) => {
+    try {
+        const response = await axiosInstance.get(`Preprocessing/${tableName}`);
+        return response.data;
+    }
+    catch (error) {
+        throw error;
+    }
+}

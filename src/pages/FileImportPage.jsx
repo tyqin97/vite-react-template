@@ -185,7 +185,7 @@ export default function FileImportPage() {
   useEffect(() => {
     fetchUserFile();
     fetchUserDB();
-  }, []);
+  }, [isBuildDBOpen]);
 
   async function handleUploadClick() {
     fileInputRef.current.click();

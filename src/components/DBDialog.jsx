@@ -4,6 +4,7 @@ import "./DBDialog.css"
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { checkFile, createDB } from "../services/fileImportService";
+import { CreateOnePD } from "../services/preprocessingService";
 
 export default function DBDialog({ fileName, setClose }) {
   const [dbName, setDbName] = useState('');
@@ -19,7 +20,8 @@ export default function DBDialog({ fileName, setClose }) {
       const response = await checkFile(dbName)
 
       try{
-        const res = await createDB(dbName, fileName, hasHeader)
+        const res1 = await createDB(dbName, fileName, hasHeader)
+        const res2 = await CreateOnePD(dbName)
 
         toast.success(`成功生成数据库：${dbName}`)
         setIsClick((prevState) => !prevState);

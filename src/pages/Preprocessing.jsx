@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import "./Preprocessing.css"
 import { getDBByUser } from "../services/fileImportService";
-import { getTableByDBName, GetTableColumnByDBName, DeleteDataByRowID } from "../services/preprocessingService";
+import { getTableByDBName, GetTableColumnByDBName, DeleteDataByRowID, GetDetails } from "../services/preprocessingService";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AGTable from "../components/AGTable";
 import ConfirmationDialog from "../components/ComfirmationDialog";
 import AddDataDialog from "../components/AddOneDataDialog";
+import PreprocessingDialog from "../components/PreprocessDialog";
 
 export default function Preprocessing() {
   const [selectedDB, setSelectedDB] = useState("");
@@ -22,6 +23,8 @@ export default function Preprocessing() {
   const [toUpdate, setToUpdate] = useState(false);
   const [selectedID, setSelectedID] = useState([]);
   const [isDelete, setIsDelete] = useState(false);
+  const [isPDetails, setIsPDetails] = useState(false);
+  const [predetails, setPredetails] = useState();
   // const [gridKey, setGridKey] = useState(0);
 
   useEffect(() => {
@@ -49,6 +52,10 @@ export default function Preprocessing() {
       setToUpdate(prev => !prev)
     }
   }, [toUpdate])
+
+  useEffect(() => {
+    localStorage.setItem("pdetail", JSON.stringify(predetails));
+  }, [predetails])
 
   async function getDbList() {
     const response = await getDBByUser(user.id)
@@ -91,6 +98,10 @@ export default function Preprocessing() {
     setIsLoading(prev => !prev)
 
     try {
+      const preResponse = await GetDetails(selectedDB);
+      setPredetails(preResponse);
+      localStorage.setItem("pdetail", JSON.stringify(preResponse));
+
       const dataResponse = await getTableByDBName(selectedDB);
       const columnResponse = await GetTableColumnByDBName(selectedDB);
 
@@ -122,7 +133,9 @@ export default function Preprocessing() {
   }
 
   async function handleConfigClick () {
-    alert(`Configuration button ${selectedDB} clicked!`);
+    setIsPDetails(prev => !prev)
+    const val = localStorage.getItem('pdetail')
+    alert(`${val}`);
   }
 
   async function handleAddOneDataClick () {
@@ -157,7 +170,7 @@ export default function Preprocessing() {
       setTimeout(() => {
         setToUpdate(prev => !prev)
         setIsDelete(prev => !prev)
-      }, 3500)
+      }, 3300)
     }
     catch (error) {
       toast.error(error.message)
@@ -228,6 +241,11 @@ export default function Preprocessing() {
             message={`是否确定删除ID : [${selectedID.join(",")}]（无法撤销）`}
             onConfirm={handleConfirmDelete}
             onCancel={() => {setIsDelete(prev => !prev)}}
+          />
+        }
+        {isPDetails &&
+          <PreprocessingDialog
+            setPredetails={setPredetails}
           />
         }
       </div>
