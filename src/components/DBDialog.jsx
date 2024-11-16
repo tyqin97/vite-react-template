@@ -82,7 +82,7 @@ export default function DBDialog({ fileName, setClose }) {
                 <button  
                   disabled={isClick}
                   type="button" 
-                  onClick={handleCancel} 
+                  onClick={handleCancel}
                 >取消</button>
               </div>
             </form>

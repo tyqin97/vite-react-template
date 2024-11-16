@@ -15,9 +15,22 @@
 
 .modal-content {
     background: white;
-    padding: 20px;
+    padding: 50px;
     border-radius: 8px;
     text-align: center;
+}
+
+.side-by-side {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.side-by-side input[type="checkbox"] {
+    transform: scale(1.5); /* Make checkbox a bit larger */
+    accent-color: #007bff; /* Customize checkbox color */
 }
 
 .input-container {

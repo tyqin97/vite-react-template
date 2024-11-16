@@ -134,8 +134,6 @@ export default function Preprocessing() {
 
   async function handleConfigClick () {
     setIsPDetails(prev => !prev)
-    const val = localStorage.getItem('pdetail')
-    alert(`${val}`);
   }
 
   async function handleAddOneDataClick () {
@@ -246,6 +244,7 @@ export default function Preprocessing() {
         {isPDetails &&
           <PreprocessingDialog
             setPredetails={setPredetails}
+            setIsPDetails={setIsPDetails}
           />
         }
       </div>
