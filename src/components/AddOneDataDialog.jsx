@@ -40,7 +40,7 @@ export default function AddDataDialog({ setClose, colName, tableName, setToUpdat
 
   return (
     <div className="modal">
-        <div className="model-content">
+        <div className="modal-content">
             <h2>添加新数据</h2>
             {colName.map((name, index) => (
                 <div className="input-container" key={index}>

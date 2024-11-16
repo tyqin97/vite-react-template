@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vitejs/plugin-react-swc": "^3.7.1",
     "ag-grid-react": "^32.3.2",
     "axios": "^1.7.7",
     "prop-types": "^15.8.1",

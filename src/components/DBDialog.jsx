@@ -52,7 +52,7 @@ export default function DBDialog({ fileName, setClose }) {
 
   return (
     <div className="modal">
-          <div className="model-content">
+          <div className="modal-content">
             <h2>生成新数据库</h2>
             <h3>{fileName}</h3>
             <form>
