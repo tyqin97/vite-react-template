@@ -3,7 +3,7 @@ import "./PreprocessingDialog.css"
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { DeStandardize, GetTableColumnByDBName, Standardize } from "../services/preprocessingService";
+import { DeStandardize, GetDetails, GetTableColumnByDBName, Standardize } from "../services/preprocessingService";
 
 import TwoPanelMultiselect from "./TwoPanelMultiselect.jsx"
 
@@ -14,20 +14,17 @@ export default function PreprocessingDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
-  const [xtCol, setXTCol] = useState({
-    x: pdetails.xList.$values, 
-    t: pdetails.tList.$values
-  });
+  const [xtCol, setXTCol] = useState(pdetails);
 
   useEffect(() => {
-    if (xtCol.x.length == 0) {
+    if (pdetails.xList.$values.length == 0) {
         const loadColName = async () => {
             try {
                 const colName = await GetTableColumnByDBName(pdetails.dbUnit.dbName);
                 setXTCol((prev) => {
                     return {
                         ...prev,
-                        x: colName.colName.$values.slice(1)
+                        xList: colName.colName.$values.slice(1)
                     }
                 })
             }
@@ -73,11 +70,17 @@ export default function PreprocessingDialog({
 
   async function handleEditClick() {
     setIsEdit(prev => !prev)
-  }
-
-  async function handleEditDoneClick () {
-    setIsEdit(prev => !prev)
-    alert("Done editing")
+    const response = await GetDetails(pdetails.dbUnit.dbName);
+    setPredetails(response)
+    if (response.zscoreParam !== undefined) {
+        setPredetails((prev) => {
+          return {
+            ...prev,
+            zscoreParam: JSON.parse(prev.zscoreParam)
+          }
+        })
+      }
+      localStorage.setItem("pdetail", JSON.stringify(response));
   }
 
   return (
@@ -110,8 +113,10 @@ export default function PreprocessingDialog({
             <>
               <TwoPanelMultiselect
                 setIsEdit={setIsEdit}
-                xtCol={xtCol}
-                setXTCol={setXTCol}
+                xtCol={pdetails}
+                setXTCol={setPredetails}
+                setIsPDetails={setIsPDetails}
+                setToUpdate={setToUpdate}
               />
             </>
             }

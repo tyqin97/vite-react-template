@@ -100,6 +100,7 @@ export const Standardize = async (tableId) => {
                 dbUnitId: tableId
             })
         )
+        return response.data;
     }
     catch (error) {
         throw error;
@@ -113,6 +114,24 @@ export const DeStandardize = async (tableId) => {
                 dbUnitId: tableId
             })
         )
+        return response.data;
+    }
+    catch (error) {
+        throw error;
+    }
+}
+
+export const DefineXT = async (pdId, listX, listT) => {
+    try {
+        const data = {
+            preprocessId: pdId,
+            xColName: listX,
+            tColname: listT
+        }
+        const response = await axiosInstance.post("Preprocessing/defineXT", data, {
+            headers: {"Content-Type": 'application/json'}}
+        )
+        return response.data;
     }
     catch (error) {
         throw error;

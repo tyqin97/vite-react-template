@@ -46,8 +46,6 @@ export default function Preprocessing() {
       return;
     }
     else {
-      // fetchData()
-      // setGridKey(prev => prev + 1);
       handleLoadingClick()
       setToUpdate(prev => !prev)
     }
