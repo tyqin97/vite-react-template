@@ -14,10 +14,15 @@
 }
 
 .modal-content {
-    background: white;
+    background: rgb(255, 255, 255);
     padding: 50px;
     border-radius: 8px;
     text-align: center;
+}
+
+.modal-content button {
+    margin-top: 50px;
+    /* padding:20px; */
 }
 
 .side-by-side {
@@ -28,10 +33,49 @@
     align-items: center;
 }
 
-.side-by-side input[type="checkbox"] {
-    transform: scale(1.5); /* Make checkbox a bit larger */
-    accent-color: #007bff; /* Customize checkbox color */
+.side-by-side button {
+    margin:10px;
+    border-radius: 8px;
+    padding: 10px;
+    width:100px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
+
+.side-by-side button:hover {
+    background-color: #0056b3;
+}
+
+.side-by-side button:disabled {
+    background-color: #cccccc; /* Light gray background */
+    color: #666666; /* Darker gray text */
+    cursor: not-allowed; /* Show "not-allowed" cursor */
+    opacity: 0.6; /* Reduce opacity */
+}
+
+.close-btn {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.close-btn button {
+    width: 330px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #eb1f29;
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+}
+
+.close-btn button:hover {
+    background-color: #bd1b23;
+}
+
 
 .input-container {
     display:flex;

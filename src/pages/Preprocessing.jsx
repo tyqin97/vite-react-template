@@ -100,6 +100,14 @@ export default function Preprocessing() {
     try {
       const preResponse = await GetDetails(selectedDB);
       setPredetails(preResponse);
+      if (preResponse.zscoreParam !== undefined) {
+        setPredetails((prev) => {
+          return {
+            ...prev,
+            zscoreParam: JSON.parse(prev.zscoreParam)
+          }
+        })
+      }
       localStorage.setItem("pdetail", JSON.stringify(preResponse));
 
       const dataResponse = await getTableByDBName(selectedDB);
@@ -243,12 +251,14 @@ export default function Preprocessing() {
         }
         {isPDetails &&
           <PreprocessingDialog
+            pdetails={predetails}
             setPredetails={setPredetails}
             setIsPDetails={setIsPDetails}
+            setToUpdate={setToUpdate}
           />
         }
       </div>
-      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" clearOnClick={true}/>
+      <ToastContainer position="bottom-right" autoClose={3000} theme="dark"/>
     </div>
   );
 }
