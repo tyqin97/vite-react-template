@@ -1,0 +1,83 @@
+.param-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.box01 {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    /* border: 1px solid black;
+    border-radius: 20px;
+    border-color: black; */
+}
+
+.box02, .box03{
+    width: 48%; /* Example width */
+    height: 65vh; /* Example height */
+    text-align: center; /* Center text horizontally */
+    border: 1px solid black;
+    border-radius: 20px;
+    border-color: black;
+    justify-content: center;
+    box-sizing: border-box; /* Include padding and border in height calculation */
+    padding:10px 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.box02 h2 {
+    font-size: 30px; /* Larger font for heading */
+    color: #000000; /* Darker text color */
+    margin-bottom: 15px; /* Space below heading */
+    text-align: center; /* Center align the title */
+}
+
+.box02 div {
+    padding: 10px 0px;
+}
+
+.box02 label {
+    font-weight: bold;
+    font-size: 20px; /* Label font size */
+    color: #000; /* Softer text color */
+    margin-right: 10px; /* Space between label and value */
+    word-wrap: break-word; /* Ensure text wraps within the box */
+    white-space: pre-wrap; /* Preserve line breaks */
+}
+
+.box02 h4 {
+    background-color: #dde5e6;
+    padding: 5px;
+    font-size: 16px; /* Value font size */
+    color: #555; /* Darker text color */
+    margin: 0px 30px; /* Remove extra margin */
+    word-wrap: break-word; /* Wrap long text inside the box */
+    border: 1px solid black;
+    border-radius: 10px;
+    border-color: black;
+}
+
+.box03 h2 {
+    font-size: 30px; /* Larger font for heading */
+    color: #000000; /* Darker text color */
+    margin-bottom: 15px; /* Space below heading */
+    text-align: center; /* Center align the title */
+}
+
+.box03 button {
+    width: 150px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #0bbe47;
+    color:#ffffff;
+    transition: background-color 0.3s ease;
+}
+
+.box03 button:hover {
+    background-color: #0c973b;
+}

@@ -106,7 +106,7 @@ export default function Preprocessing() {
           }
         })
       }
-      localStorage.setItem("pdetail", JSON.stringify(preResponse));
+      // localStorage.setItem("pdetail", JSON.stringify(preResponse));
 
       const dataResponse = await getTableByDBName(selectedDB);
       const columnResponse = await GetTableColumnByDBName(selectedDB);

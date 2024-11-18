@@ -28,12 +28,12 @@ export default function SideBar({ isAuthenticated, setIsAuthenticated }) {
         <li>
           <a href="/preset">配置网络参数</a>
         </li>
-        <li>
+        {/* <li>
           <a href="/">训练样本数据</a>
         </li>
         <li>
           <a href="/">验证样本数据</a>
-        </li>
+        </li> */}
         <li>
           <a href="/">模型构建</a>
         </li>
