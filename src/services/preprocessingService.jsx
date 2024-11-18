@@ -137,3 +137,15 @@ export const DefineXT = async (pdId, listX, listT) => {
         throw error;
     }
 }
+
+export const SetPercent = async (id, listPercent) => {
+    try {
+        const response = await axiosInstance.post(`Preprocessing/setPercentage?preprocessId=${id}`, listPercent, {
+            headers: {"Content-Type": "application/json"}}
+        )
+        return response.data;
+    }
+    catch (error) {
+        throw error;
+    }
+}
