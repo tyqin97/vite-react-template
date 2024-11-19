@@ -89,7 +89,12 @@ export default function LoginPage({ setIsAuthenticated }) {
           />
         </div>
         <br />
-        <button disabled={isSuccess} type="submit">
+        <button 
+          disabled={isSuccess} type="submit"
+          style={{color: "white", backgroundColor:"#0bbe47", transition:"background-color 0.3s ease"}}
+            onMouseEnter={(e) => (e.target.style.backgroundColor = "#0c973b")}
+            onMouseLeave={(e) => (e.target.style.backgroundColor = "#0bbe47")}
+        >
           登入
         </button>
         <br />

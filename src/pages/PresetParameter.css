@@ -7,7 +7,7 @@
 
 .box01 {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: stretch;
     width: 100%;
     height: 100%;
@@ -17,7 +17,7 @@
 }
 
 .box02, .box03{
-    width: 48%; /* Example width */
+    width: 47%; /* Example width */
     height: 65vh; /* Example height */
     text-align: center; /* Center text horizontally */
     border: 1px solid black;
@@ -38,7 +38,7 @@
 }
 
 .box02 div {
-    padding: 10px 0px;
+    padding: 5px 0px;
 }
 
 .box02 label {
@@ -69,15 +69,77 @@
     text-align: center; /* Center align the title */
 }
 
-.box03 button {
-    width: 150px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #0bbe47;
-    color:#ffffff;
-    transition: background-color 0.3s ease;
+.box03 div {
+    padding: 5px 0px;
+    /* display: "flex";
+    flex-direction: "column";
+    gap: "10px"; */
 }
 
-.box03 button:hover {
-    background-color: #0c973b;
+.box03 .stack-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+.box03 label {
+    min-height: 24px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 20px; /* Label font size */
+    color: #000; /* Softer text color */
+    margin-right: 10px; /* Space between label and value */
+    word-wrap: break-word; /* Ensure text wraps within the box */
+    white-space: pre-wrap; /* Preserve line breaks */
+}
+
+.box03 input {
+    width:85%;
+    background-color: #e3fcff;
+    font-size: 16px; /* Value font size */
+    color: #555; /* Darker text color */
+    word-wrap: break-word; /* Wrap long text inside the box */
+    border: 1px solid black;
+    border-radius: 10px;
+    border-color: black;
+    margin-right: 10px;
+    padding: 5px;
+    text-align: center;
+    font-family: inherit;
+    font-weight: bold;
+}
+
+.box03 h4 {
+    background-color: #dde5e6;
+    padding: 5px;
+    font-size: 16px; /* Value font size */
+    color: #555; /* Darker text color */
+    margin: 0px 30px; /* Remove extra margin */
+    word-wrap: break-word; /* Wrap long text inside the box */
+    border: 1px solid black;
+    border-radius: 10px;
+    border-color: black;
+}
+
+.box03 .custom-select {
+    width:85%;
+    background-color: #e3fcff;
+    font-size: 16px; /* Value font size */
+    color: #555; /* Darker text color */
+    word-wrap: break-word; /* Wrap long text inside the box */
+    border: 1px solid black;
+    border-radius: 10px;
+    border-color: black;
+    margin-right: 10px;
+    padding: 5px;
+    text-align: center;
+    font-family: inherit;
+    font-weight: bold;
+}
+
+.custom-select option {
+    padding: 10px; /* Add padding inside each option */
+    font-size: 16px; /* Option font size */
+    color: #000; /* Option text color */
+    background-color: #e3fcff; /* Option background */
+  }

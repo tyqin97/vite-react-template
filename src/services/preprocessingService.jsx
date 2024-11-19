@@ -149,3 +149,15 @@ export const SetPercent = async (id, listPercent) => {
         throw error;
     }
 }
+
+export const SaveModelParams = async (tableName, params) => {
+    try {
+        const response = await axiosInstance.post(`Preprocessing/saveModelParams?dbName=${tableName}`, params, {
+            headers: {"Content-Type": "application/json"}}
+        )
+        return response.data;
+    }
+    catch (error) {
+        throw error;
+    }
+}
