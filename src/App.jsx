@@ -12,6 +12,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import PresetParameter from "./pages/PresetParameter";
 import Preprocessing from "./pages/Preprocessing";
 import FileImportPage from "./pages/FileImportPage";
+import ModelBuild from "./pages/ModelBuildPage";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -62,6 +63,14 @@ export default function App() {
               element={
                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                   <PresetParameter />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/modelbuild"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <ModelBuild />
                 </ProtectedRoute>
               }
             />

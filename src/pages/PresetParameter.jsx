@@ -114,6 +114,7 @@ export default function PresetParameter() {
 
   async function handleSaveParamClick () {
     try {
+      console.log(modelParam)
       const response = await SaveModelParams(selectedDb, modelParam)
       toast.success("更新成功!")
     }
@@ -140,6 +141,15 @@ export default function PresetParameter() {
         }
       })
     }
+    if (name == "maxCandidates" || name == "maxNodes" ||
+        name == "minTolerance" || name == "nodePerAdd") {
+          setModelParam((prev) => {
+            return {
+              ...prev,
+              [name] : Number(value)
+            }
+          })
+        }
   }
 
   return (
@@ -279,6 +289,7 @@ export default function PresetParameter() {
                 <div className="stack-div">
                   <label>最大候选节点数: </label>
                   <input
+                    type="number"
                     defaultValue={modelParam.maxCandidates}
                     name="maxCandidates"
                     onChange={handleInputChange}
@@ -287,6 +298,7 @@ export default function PresetParameter() {
                 <div className="stack-div">
                   <label>最大节点数: </label>
                   <input
+                    type="number"
                     defaultValue={modelParam.maxNodes}
                     name="maxNodes"
                     onChange={handleInputChange}
@@ -295,6 +307,7 @@ export default function PresetParameter() {
                 <div className="stack-div">
                   <label>最小误差: </label>
                   <input
+                    type="number"
                     defaultValue={modelParam.minTolerance}
                     name="minTolerance"
                     onChange={handleInputChange}
@@ -303,6 +316,7 @@ export default function PresetParameter() {
                 <div className="stack-div">
                   <label>节点添加数/循环: </label>
                   <input
+                    type="number"
                     defaultValue={modelParam.nodePerAdd}
                     name="nodePerAdd"
                     onChange={handleInputChange}
