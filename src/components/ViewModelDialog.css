@@ -1,0 +1,56 @@
+.modal {
+    text-align: center;
+    position: fixed;
+    padding: 50px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(134, 131, 131, 0.644);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+}
+
+.modal-content {
+    max-width: 80%;
+    max-height: 80%;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.sideside {
+    display: flex;          /* Enable flexbox */
+    justify-content: space-evenly; /* Distribute space evenly between the items */
+    align-items: center;    /* Center align the items vertically */
+    padding: 20px;  
+}
+
+.sideside h3 {
+    margin: 0;              /* Remove default margin to avoid extra space around the h3 elements */
+    padding-right: 10px;    /* Optional: Add some spacing between h3 and button */
+}
+  
+.sideside button { 
+    cursor: pointer;       /* Make the cursor a pointer on hover */
+    color: white;
+    background-color: #007bff;
+    margin: 0px 10px;
+    width: 200px;
+}
+
+.matrix {
+    overflow: auto;
+    width: 100%;
+    height: 450px;
+}
+
+.closebtn {
+    margin-top:40px;
+    color:white;
+    background-color: #eb1f29;
+    width: 150px;
+}

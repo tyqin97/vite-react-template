@@ -1,0 +1,56 @@
+.model-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.model-page .box02 {
+    width: 78%; /* Example width */
+    height: 63vh; /* Example height */
+    text-align: center; /* Center text horizontally */
+    border: 1px solid black;
+    border-radius: 20px;
+    border-color: black;
+    justify-content: center;
+    box-sizing: border-box; /* Include padding and border in height calculation */
+    padding:10px 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.model-page .box03 {
+    width: 20%; /* Example width */
+    height: 63vh; /* Example height */
+    text-align: center; /* Center text horizontally */
+    border: 1px solid black;
+    border-radius: 20px;
+    border-color: black;
+    justify-content: center;
+    flex-direction: column;   /* Stack items vertically */
+    box-sizing: border-box; /* Include padding and border in height calculation */
+    padding:10px 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.box03 button {
+    margin-top: 50px;
+    width: 150px;
+    color: white;
+    background-color: #007bff;
+    transition: background-color 0.3s ease;
+}
+
+.box03 button:hover {
+    color: black;
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 10px;
+    border-color: rgb(255, 255, 255);
+}
+
+.box03 button:disabled {
+    background-color: #cccccc; /* Light gray background */
+    color: #000000; /* Darker gray text */
+    cursor: not-allowed; /* Show "not-allowed" cursor */
+    opacity: 0.6; /* Reduce opacity */
+}

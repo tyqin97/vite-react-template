@@ -4,7 +4,7 @@ import "./DBDialog.css"
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { checkFile, createDB } from "../services/fileImportService";
-import { CalcZScoreParam } from "../services/preprocessingService";
+import { CalcZScoreParam, DefineXT } from "../services/preprocessingService";
 import { CreateOnePD } from "../services/preprocessingService";
 
 export default function DBDialog({ fileName, setClose }) {
@@ -22,8 +22,11 @@ export default function DBDialog({ fileName, setClose }) {
 
       try{
         const res1 = await createDB(dbName, fileName, hasHeader)
+        const colNames = res1.columns.$values
         const res2 = await CreateOnePD(dbName)
+        const preId = res2.id
         const res3 = await CalcZScoreParam(dbName)
+        const res4 = await DefineXT(preId, colNames, [])
 
         toast.success(`成功生成数据库：${dbName}`)
         setIsClick((prevState) => !prevState);
