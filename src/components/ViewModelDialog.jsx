@@ -12,7 +12,6 @@ export default function ViewModel ({ setViewModal, model }) {
     }
 
     async function handleMatrixClick (event) {
-        console.log(event.target.value)
         setMatrix(
             <div className="matrix">
                 <MatrixVisualizer
@@ -28,32 +27,32 @@ export default function ViewModel ({ setViewModal, model }) {
                 className="modal-content"
                 style={{padding: "20px"}}
             >
-                <h2>View Model</h2>
+                <h2>模型参数</h2>
                 <div className="sideside">
                     <div>
                         <button
                             value={0}
                             onClick={handleMatrixClick}
-                        >Input Weights</button>
+                        >输入权值</button>
                     </div>
                     <div>
                         <button
                             value={1}
                             onClick={handleMatrixClick}
-                        >Biases</button>
+                        >偏值</button>
                     </div>
                     <div>
                         <button
                             value={2}
                             onClick={handleMatrixClick}
-                        >Output Weights</button>
+                        >输出权值</button>
                     </div>
                 </div>
                 {matrix}
                 <button
                     className="closebtn"
                     onClick={handleCloseClick}
-                >Close</button>
+                >关闭</button>
             </div>
         </div>
     );

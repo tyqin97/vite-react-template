@@ -9,13 +9,15 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend,
+  Legend
 } from "chart.js";
 
 // Register required Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export default function LiveGraph({ setResult }) {
+export default function LiveGraph({ setResult, setChartImg }) {
+  const chartRef = useRef(null);
+
   const [data, setData] = useState({
     labels: [], // Timestamps or x-axis values
     datasets: [
@@ -48,7 +50,7 @@ export default function LiveGraph({ setResult }) {
     connection.off("ReceiveMessage"); // Clear any existing listeners
     // Listen for data from SignalR
     connection.on("ReceiveMessage", (newData) => {
-      console.log("New Data Received:", newData);
+    //   console.log("New Data Received:", newData);
 
       if (!newData.end) {
         setData((prevData) => {
@@ -86,15 +88,37 @@ export default function LiveGraph({ setResult }) {
           });
       }
       else {
-        setResult((prev) => {
+        setData((prevData) => {            
+            const updatedLabels = [...prevData.labels.slice(0, -1)]; 
+            const updatedData1 = [...prevData.datasets[0].data.slice(0, -1)];
+            const updatedData2 = [...prevData.datasets[1].data.slice(0, -1)];
+    
+            setResult((prev) => {
+                return {
+                    ...prev,
+                    nodesNumber: newData.nodesNumber,
+                    trainingResult:newData.trainingResult,
+                    validationResult:newData.validationResult
+                }
+            })
             return {
-                ...prev,
-                nodesNumber: newData.nodesNumber,
-                trainingResult:newData.trainingResult,
-                validationResult:newData.validationResult
-            }
-        })
-      }
+              ...prevData,
+              labels: updatedLabels,
+              datasets: [
+                {
+                  ...prevData.datasets[0],
+                  data: updatedData1,
+                },
+                {
+                    ...prevData.datasets[1],
+                    data: updatedData2,
+                  },
+              ],
+            };
+        });
+        
+        sendImgToParent();
+      }        
     });
 
     // Cleanup on component unmount
@@ -103,9 +127,17 @@ export default function LiveGraph({ setResult }) {
     };
   }, []);
 
+  async function sendImgToParent() {
+    const chartInstance = chartRef.current; // Access the chart instance
+    if (chartInstance && typeof setChartImg === 'function') {
+        setChartImg(chartInstance); // Pass the chart instance to the parent
+    }
+  }
+
   return (
     <div style={{ width: "90%", height: "95%", alignContent:"center", margin: "0 auto" }}>
       <Line
+        ref={chartRef}
         data={data}
         options={{
           responsive: true,

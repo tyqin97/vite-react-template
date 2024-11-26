@@ -7,9 +7,9 @@ import { GetDetails } from "../services/preprocessingService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./ModelBuildPage.css";
-import { startTraining, stopTraining } from "../services/trainingService";
-import MatrixVisualizer from "../components/MatrixVisualizer";
+import { saveModel, startTraining, stopTraining } from "../services/trainingService";
 import ViewModel from "../components/ViewModelDialog";
+import SaveDialog from "../components/SaveDialog";
 
 export default function ModelBuild() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("userData")));
@@ -24,6 +24,9 @@ export default function ModelBuild() {
     const [endTraining, setEndTraining] = useState(false);
 
     const [viewModel, setViewModel] = useState(false);
+    const [chartImg, setChartImg] = useState(null);
+
+    const [saveDialog, setSaveDialog] = useState(false);
 
     const [result, setResult] = useState({
         "trainingResult": "-", 
@@ -92,6 +95,7 @@ export default function ModelBuild() {
     }
 
     async function handleResetClick () {
+        setEndTraining(false);
         setRender(render + 1)
         setResult({
             "trainingResult": "-", 
@@ -99,6 +103,17 @@ export default function ModelBuild() {
             "testResult": "-",
             "nodesNumber": "-"
         })
+    }
+
+    async function handleSaveGraphClick () {
+        console.log(chartImg)
+        if (chartImg) {
+            const base64Image = chartImg.toBase64Image(); // Generate the image when needed
+            const link = document.createElement('a');
+            link.href = base64Image;
+            link.download = 'chart.png';
+            link.click();
+        }
     }
 
     async function handleViewModelClick () {
@@ -111,12 +126,12 @@ export default function ModelBuild() {
         setIsTraining(prev => !prev);
         setEndTraining(true);
 
-        toast.info("Stopped!")
+        toast.info("终止训练!")
     }
 
     async function handleStartTrainClick () {
-        handleResetClick();
         setTimeout(() => {
+            handleResetClick();
             setIsTraining(prev => !prev);
         }, 500)
 
@@ -128,7 +143,21 @@ export default function ModelBuild() {
 
         setIsTraining(prev => !prev);
         setEndTraining(true);
-        toast.info("Removed overfit node!")
+        toast.info("成功移除过拟合节点!")
+    }
+
+    async function handleSaveModelClick () {
+        setSaveDialog(prev => !prev);
+        // try {
+        //     const response = await saveModel(user.id, selectedDb, name, model.Matrices);
+
+        //     console.log(response);
+        //     toast.success("Save successfully!");
+        // }
+        // catch (error) {
+        //     console.log(error);
+        //     toast.error(error);
+        // }
     }
 
     return (
@@ -160,12 +189,13 @@ export default function ModelBuild() {
                         <button
                             style={{width:"120px"}}
                             onClick={handleStopTrainClick}
+                            disabled={!isTraining}
                         >停止训练</button>
                     </>
                     }
                 </div>
                 <div className="right-side">
-                    {isLoaded && 
+                    {isLoaded && endTraining && 
                     <>
                         <button
                             style={{backgroundColor:"#007bff", width:"120px"}}
@@ -174,6 +204,7 @@ export default function ModelBuild() {
                         >重置训练</button>
                         <button
                             style={{backgroundColor:"#0bbe47", width:"120px"}}
+                            onClick={handleSaveModelClick}
                             disabled={isTraining}
                         >储存模型</button>
                     </>
@@ -184,7 +215,8 @@ export default function ModelBuild() {
                 <div className="box02">
                     <LiveGraphComponent
                         key={render}
-                        setResult={setResult} 
+                        setResult={setResult}
+                        setChartImg={setChartImg}
                     />
                 </div>
                 <div className="box03">
@@ -197,15 +229,28 @@ export default function ModelBuild() {
                     <h3>测试集-均方根误差</h3>
                     <h4>{parseFloat(result.testResult || 0).toFixed(5)}</h4>
                     {endTraining &&
-                        <button
-                            onClick={handleViewModelClick}
-                        >查看模型</button>
+                        <>
+                            <button
+                                onClick={handleViewModelClick}
+                            >查看模型</button>
+                            <button
+                                onClick={handleSaveGraphClick}
+                            >下载图像</button>
+                        </>     
                     }
                 </div>
             </div>
             {viewModel &&
                 <ViewModel
                     setViewModal={setViewModel}
+                    model={model}
+                />
+            }
+            {saveDialog &&
+                <SaveDialog
+                    setSaveDialog={setSaveDialog}
+                    user={user}
+                    selectedDb={selectedDb}
                     model={model}
                 />
             }

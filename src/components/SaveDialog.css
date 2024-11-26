@@ -1,0 +1,16 @@
+input[type="text"] {
+    width: 70%; /* Full-width input */
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding doesn’t exceed width */
+    /* margin-bottom: 20px; */
+}
+
+button:disabled {
+    background-color: #cccccc; /* Light gray background */
+    color: #666666; /* Darker gray text */
+    cursor: not-allowed; /* Show "not-allowed" cursor */
+    opacity: 0.6; /* Reduce opacity */
+}
