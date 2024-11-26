@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { saveModel } from "../services/trainingService";
 
-export default function SaveDialog({ setSaveDialog, user, selectedDb, model }) {
+export default function SaveDialog({ setSaveDialog, user, selectedDb, model, af }) {
     const [name, setName] = useState();
     const [isClick, setIsClick] = useState(false);
 
@@ -15,7 +15,7 @@ export default function SaveDialog({ setSaveDialog, user, selectedDb, model }) {
     async function handleSaveClick () {
         try {
             setIsClick(prev => !prev);
-            const response = await saveModel(user.id, selectedDb, name, model.Matrices);
+            const response = await saveModel(user.id, selectedDb, name, af, model.Matrices);
             toast.success("储存成功！");
 
             setTimeout(() => {

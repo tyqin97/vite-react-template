@@ -19,6 +19,7 @@ export default function ModelBuild() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [preDetail, setPreDetail] = useState();
     const [model, setModel] = useState();
+    const [af, setAf] = useState();
 
     const [isTraining, setIsTraining] = useState(false);
     const [endTraining, setEndTraining] = useState(false);
@@ -138,8 +139,9 @@ export default function ModelBuild() {
         const response = await startTraining(selectedDb);
         setResult((prev) => ({ ...prev, testResult: response.testResult}))
 
-        console.log(JSON.parse(response.model))
+        console.log(response.af)
         setModel(JSON.parse(response.model))
+        setAf(response.af)
 
         setIsTraining(prev => !prev);
         setEndTraining(true);
@@ -252,6 +254,7 @@ export default function ModelBuild() {
                     user={user}
                     selectedDb={selectedDb}
                     model={model}
+                    af={af}
                 />
             }
             <ToastContainer position="bottom-right" autoClose={3000} theme="dark"/>

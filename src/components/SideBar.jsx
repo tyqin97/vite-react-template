@@ -37,11 +37,11 @@ export default function SideBar({ isAuthenticated, setIsAuthenticated }) {
         <li>
           <a href="/modelbuild">模型构建</a>
         </li>
-        <li>
+        {/* <li>
           <a href="/">辅助样本数据</a>
-        </li>
+        </li> */}
         <li>
-          <a href="/">模型预测</a>
+          <a href="/modelpredict">模型预测</a>
         </li>
         <li>
           <a
