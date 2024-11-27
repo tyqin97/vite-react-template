@@ -259,11 +259,11 @@ export default function PresetParameter() {
                   <h4>{modelParam.nodePerAdd}</h4>
                 </div>
                 <div>
-                  <label>Lambdas: </label>
+                  <label>取值范围: </label>
                   <h4>{JSON.stringify(modelParam.lambdas)}</h4>
                 </div>
                 <div>
-                  <label>Regularization: </label>
+                  <label>压缩因子: </label>
                   <h4>{JSON.stringify(modelParam.regularizations)}</h4>
                 </div>
               </>  
@@ -323,7 +323,7 @@ export default function PresetParameter() {
                   />
                 </div>
                 <div className="stack-div">
-                  <label>Lambdas: </label>
+                  <label>取值范围: </label>
                   <input
                     defaultValue={modelParam.lambdas}
                     name="lambdas"
@@ -331,7 +331,7 @@ export default function PresetParameter() {
                   />
                 </div>
                 <div className="stack-div">
-                  <label>Regularization: </label>
+                  <label>压缩因子: </label>
                   <input
                     defaultValue={modelParam.regularizations}
                     name="regularizations"

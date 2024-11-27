@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ag-grid-community/core": "^32.3.3",
+    "@ag-grid-community/react": "^32.3.3",
     "@microsoft/signalr": "^8.0.7",
     "@vitejs/plugin-react-swc": "^3.7.1",
     "ag-grid-react": "^32.3.2",
     "axios": "^1.7.7",
     "chart.js": "^4.4.6",
+    "papaparse": "^5.4.1",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
