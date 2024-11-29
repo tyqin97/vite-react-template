@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import LiveGraphComponent from "../components/LiveGraph";
+import LiveGraph from "../components/LiveGraph";
 
 import { getDBByUser } from "../services/fileImportService";
 import { GetDetails } from "../services/preprocessingService";
@@ -215,7 +215,7 @@ export default function ModelBuild() {
             </div>
             <div className="box01">
                 <div className="box02">
-                    <LiveGraphComponent
+                    <LiveGraph
                         key={render}
                         setResult={setResult}
                         setChartImg={setChartImg}

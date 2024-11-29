@@ -5,32 +5,40 @@ import { getDBByUser } from "../services/fileImportService";
 import Papa from "papaparse";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getModelsByUserDB } from "../services/trainingService";
+import { getModelsByUserDB, predictModel } from "../services/trainingService";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css'; // Core grid CSS
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Optional theme CSS
+import { BsFiletypeCsv } from "react-icons/bs";
 import { GetDetails } from "../services/preprocessingService";
+import LiveGraph from "../components/LiveGraph";
 
 export default function ModelPredict() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("userData")));
     const [selectedDbId, setSelectedDbId] = useState("");
     const [selectedModelId, setSelectedModelId] = useState("");
     const [selectedMode, setSelectedMode] = useState("");
+    const [selectedFile, setSelectedFile] = useState("");
     const [preDetail, setPreDetail] = useState({});
+    const [XT, setXT] = useState();
 
     const [isDbSelected, setIsDbSelected] = useState(false);
     const [isModelSelected, setIsModelSelected] = useState(false);
     const [isModeSelected, setIsModeSelected] = useState(false);
     const [isModelLoaded, setIsModelLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isFileLoaded, setIsFileLoaded] = useState(false);
 
     const [dbList, setDbList] = useState([]);
     const [modelList, setModelList] = useState([]);
+
+    const [isOpt1, setIsOpt1] = useState(true);
 
     const fileInputRef = useRef(null);
     const [header, setHeader] = useState([]);
     const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([]);
+    const [refresh, setRefresh] = useState(0);
 
     useEffect(() => {
         getDBList();
@@ -43,6 +51,31 @@ export default function ModelPredict() {
             setTimeout(() => {setIsLoading(prev => !prev)}, 400)
         }
     }, [selectedDbId])
+
+    useEffect(() => {
+        setRowData([])
+        setColumnDefs([])
+    }, [refresh])
+
+    useEffect(() => {
+        if (XT != null) {
+            setIsLoading(prev => !prev)
+            const fetchData = async () => {
+                try{
+                    const response = await predictModel(selectedModelId, XT.X, XT.T)
+                    console.log(response)
+                }
+                catch (error) {
+                    toast.error(error.message)
+                }
+                finally{
+                    setIsLoading(prev => !prev)
+                }
+            }
+            fetchData();
+        }
+    }, [XT])
+
 
     async function getDBList() {
         try {
@@ -64,6 +97,10 @@ export default function ModelPredict() {
         }
     }
 
+    async function handleToggle () {
+        setIsOpt1(prev => !prev)
+    }
+
     async function handleSelectedDB (event) {
         setSelectedDbId(event.target.value)
         setIsDbSelected(true)
@@ -80,7 +117,7 @@ export default function ModelPredict() {
     }
 
     async function handleLoadingClick() {
-        setIsModelLoaded(true);
+        setIsLoading(prev => !prev)
 
         const response = await GetDetails(selectedDbId.split(",")[1])
         setPreDetail(response)
@@ -91,16 +128,34 @@ export default function ModelPredict() {
         if (selectedMode == "without") {
             setHeader(response.xList.$values);
         }
+        setTimeout(() => {
+            setIsLoading(prev => !prev)
+            setIsModelLoaded(true);
+            setSelectedFile("");
+            setIsFileLoaded(false)
+            setRefresh(refresh + 1);
+        }, 400)
         
+        toast.success("模型加载成功！")
     }
 
     async function handleUploadClick() {
         fileInputRef.current.click();
     }
 
+    async function handleRemoveUploadClick () {
+        setSelectedFile("")
+        setIsFileLoaded(false)
+        setRefresh(refresh + 1)
+    }
+
     async function handleUploadChange(event) {
         const file = event.target.files[0];
         if (!file) return ;
+
+        setIsFileLoaded(true);
+        setSelectedFile(file);
+        setRefresh(refresh + 1);
 
         Papa.parse(file, {
             header: false,
@@ -112,16 +167,54 @@ export default function ModelPredict() {
                       return acc;
                     }, {})
                 })
-                const data = result.data;
                 const column = header.map((col) => ({
                     field: col,
                     header: col,
-                    flex: 1.0
+                    flex: 1.0,
+                    valueFormatter: (params) => {
+                        return parseFloat(params.value).toFixed(10);  // Show 4 decimal places
+                    }
                 }))
                 setRowData(formattedRowData)
                 setColumnDefs(column)
             }
         })
+        
+
+        event.target.value = null;
+    }
+
+    async function handleStartPredictClick () {
+        setXT(null);
+
+        try {
+            if (selectedMode == "with"){
+                splitData();
+            }
+            if (selectedMode == "without"){
+                const nestedArray = rowData.map(row => Object.values(row));
+                setXT(prev => ({...prev, X: nestedArray}))
+            }
+        }
+        catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+    function splitData () {
+        const Z = rowData;
+        const xList = preDetail.xList.$values;
+        const tList = preDetail.tList.$values;
+        let Xi = [];
+        let Ti = [];
+
+        Z.forEach(row => {
+            const xRow = xList.map(col => parseFloat(row[col]));
+            Xi.push(xRow);
+            const tRow = tList.map(col => parseFloat(row[col]));
+            Ti.push(tRow);
+        })
+        setXT((prev) => ({...prev, X:Xi, T:Ti}))
     }
     
     return (
@@ -156,45 +249,134 @@ export default function ModelPredict() {
                         <option key={1} value={"without"}>无目标预测</option>
                     </select>
                     <button
-                        style={{backgroundColor:'#0bbe47', width:"120px"}}
+                        style={{backgroundColor:'#0bbe47', width:"150px"}}
                         disabled={isLoading || !isDbSelected || !isModelSelected || !isModeSelected}
                         onClick={handleLoadingClick}
                     >加载</button>
                     {isLoading && <div className="spinner"></div>}
                 </div>
-                {isModelLoaded && 
-                    <div className="rightside">
-                        <input
-                            type="file"
-                            accept=".csv"
-                            ref={fileInputRef}
-                            style={{ display: 'none' }}
-                            onChange={handleUploadChange}
-                        />
-                        <button
-                            style={{ backgroundColor: '#0bbe47' }}
-                            onClick={handleUploadClick}
-                        >数据文档上传</button>
-                </div>
+                {isModelLoaded &&
+                    <div className="right-side" style={{ textAlign: "center"}}>
+                        <label>显示切换：</label>
+                        <div
+                            className="toggle-container"
+                            onClick={handleToggle}
+                            style={{justifyContent: isOpt1 ? "flex-start" : "flex-end"}}
+                        >
+                            <div
+                            className="toggle-button"
+                            style={{
+                                backgroundColor: isOpt1 ? "#4A90E2" : "#9B59B6",
+                                animation: isOpt1 ? "slide-left 0.3s ease" : "slide-right 0.3s ease"
+                            }}
+                            >
+                            {isOpt1 ? "表数据" : "图数据"}
+                            </div>
+                        </div>
+                    </div>
                 }
+                
                 
             </div>
             <div className="box01">
-                <div className="ag-theme-quartz box04" style={{ height: "63vh", width: '100%' }}>
-                    <AgGridReact
-                        rowData={rowData}
-                        columnDefs={columnDefs}
-                        defaultColDef={{ sortable: true, filter: false, resizable: false }}
-                        enableCellTextSelection={true}
-                        pagination
-                        paginationPageSize={20}
-                        paginationPageSizeSelector={[5,10,20]}
-                    />
-                </div>
-                <div className="box05">
-                    <h3>{JSON.stringify(preDetail)}</h3>
-                    <h3>{selectedMode}</h3>
-                </div>
+                {isOpt1 ? 
+                    <div className="ag-theme-quartz box04" style={{ height: "63vh", width: '100%' }}>
+                        <AgGridReact
+                            rowData={rowData}
+                            columnDefs={columnDefs}
+                            defaultColDef={{ sortable: true, filter: false, resizable: false }}
+                            enableCellTextSelection={true}
+                            pagination
+                            paginationPageSize={20}
+                            paginationPageSizeSelector={[5,10,20]}
+                            rowSelection='multiple'
+                            key={refresh}
+                        />
+                    </div>
+                :
+                    <div className="box04" style={{ height: "63vh", width: '100%' }}>
+                        <LiveGraph
+                            key={refresh}
+                            // setResult={setResult}
+                            // setChartImg={setChartImg}
+                        />
+                    </div>
+                }
+                
+                {isModelLoaded && 
+                    <div className="box05">
+                        <h2>操作面板</h2>
+                        <div>
+                            <input
+                                type="file"
+                                accept=".csv"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                onChange={handleUploadChange}
+                            />
+                            <button
+                                style={{ 
+                                    backgroundColor: '#0bbe47',
+                                    margin: "10px 0px",
+                                    color: "white",
+                                    transition:"background-color 0.3s ease",
+                                    width: "40%"
+                                }}
+                                onMouseEnter={(e) => (e.target.style.color = "black")}
+                                onMouseLeave={(e) => (e.target.style.color = "white")}
+                                onClick={handleUploadClick}
+                            >预测数据上传</button>
+                            <button
+                                style={{
+                                    backgroundColor:"#eb1f29", 
+                                    margin: "10px 0px",
+                                    marginLeft: "10px",
+                                    color: "white",
+                                    width: "40%",
+                                    transition:"background-color 0.3s ease"
+                                }}
+                                onMouseEnter={(e) => (e.target.style.color = "black")}
+                                onMouseLeave={(e) => (e.target.style.color = "white")}
+                                onClick={handleRemoveUploadClick}
+                                disabled={!isFileLoaded}
+                            >移除上传文档
+                            </button>
+                        </div>
+                        {isFileLoaded ?
+                            <div>
+                                <div>
+                                    <h4>已选文件：</h4>
+                                </div>
+                                <div className="fileupload">
+                                    <h4>{selectedFile.name.split(".")[0]}</h4>
+                                    <BsFiletypeCsv style={{padding:"5px"}} size={30}/>
+                                </div>
+                                <div className="panel">
+                                    <button
+                                        style={{ 
+                                            backgroundColor: '#0bbe47',
+                                            width: "70%",
+                                            margin: "15px 0px",
+                                            color: "white",
+                                            transition:"background-color 0.3s ease"
+                                        }}
+                                        onMouseEnter={(e) => (e.target.style.color = "black")}
+                                        onMouseLeave={(e) => (e.target.style.color = "white")}
+                                        onClick={handleStartPredictClick}
+                                        disabled={isLoading}
+                                    >开始预测</button>
+                                    <h4>测试结果：</h4>
+                                </div>
+                            </div>  
+                            :
+                            <div>
+                                <h4>请先选择上传文档！</h4>
+                            </div>
+                        }
+                        
+     
+                    </div>
+                }
             </div>
             <ToastContainer position="bottom-right" autoClose={3000} theme="dark"/>
         </div>

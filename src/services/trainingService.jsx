@@ -44,3 +44,34 @@ export const getModelsByUserDB = async (userId, dbId) => {
         throw error;
     }
 }
+
+export const predictModel = async (modelId, X, T=null) => {
+    try {
+        if (T == null){
+            const data = {
+                xData: X
+            }
+            const response = await axiosInstance.post(`AITraining/predictWithModel?modelId=${modelId}`,
+                data, {
+                    headers: {"Content-Type": "application/json"}
+                }
+            )
+            return response.data;
+        }
+        else {
+            const data = {
+                xData: X,
+                tData: T
+            }
+            const response = await axiosInstance.post(`AITraining/predictWithModel?modelId=${modelId}`,
+                data, {
+                    headers: {"Content-Type": "application/json"}
+                }
+            )
+            return response.data;
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+}
