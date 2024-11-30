@@ -48,6 +48,26 @@
     margin-left: auto;
 }
 
+.ag-header-group-cell-label, .ag-header-cell-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%; /* Ensures proper alignment vertically */
+}
+
+.result-output {
+    background-color: #bdc49e;
+    margin: 15px 55px;
+    padding: 15px;
+    border-radius: 20px;
+    border-color: black;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
 .model-page .box04 {
     width: 65%; /* Example width */
     height: 63vh; /* Example height */

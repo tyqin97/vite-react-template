@@ -107,7 +107,6 @@ export default function ModelBuild() {
     }
 
     async function handleSaveGraphClick () {
-        console.log(chartImg)
         if (chartImg) {
             const base64Image = chartImg.toBase64Image(); // Generate the image when needed
             const link = document.createElement('a');
@@ -237,7 +236,7 @@ export default function ModelBuild() {
                             >查看模型</button>
                             <button
                                 onClick={handleSaveGraphClick}
-                            >下载图像</button>
+                            >下载图表</button>
                         </>     
                     }
                 </div>

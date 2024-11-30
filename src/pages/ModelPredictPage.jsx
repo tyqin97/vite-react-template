@@ -12,6 +12,7 @@ import 'ag-grid-community/styles/ag-theme-quartz.css'; // Optional theme CSS
 import { BsFiletypeCsv } from "react-icons/bs";
 import { GetDetails } from "../services/preprocessingService";
 import LiveGraph from "../components/LiveGraph";
+import ScatterGraph from "../components/ScatterGraph";
 
 export default function ModelPredict() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("userData")));
@@ -39,6 +40,20 @@ export default function ModelPredict() {
     const [rowData, setRowData] = useState([]);
     const [columnDefs, setColumnDefs] = useState([]);
     const [refresh, setRefresh] = useState(0);
+    const [gridApi, setGridApi] = useState(null);
+    const [chartImg, setChartImg] = useState(null);
+    const [plotResult, setPlotResult] = useState();
+
+    const onGridReady = (params) => {
+        setGridApi(params.api); // Set the gridApi for later use
+    };
+
+    const exportGridData = () => {
+        gridApi.exportDataAsCsv(); // Exports all grid data as a CSV
+    };
+
+    const [isPredicted, setIsPredicted] = useState(false);
+    const [predOutput, setPredOutput] = useState({});
 
     useEffect(() => {
         getDBList();
@@ -55,6 +70,8 @@ export default function ModelPredict() {
     useEffect(() => {
         setRowData([])
         setColumnDefs([])
+        setIsPredicted(false);
+        setPlotResult(null)
     }, [refresh])
 
     useEffect(() => {
@@ -63,7 +80,39 @@ export default function ModelPredict() {
             const fetchData = async () => {
                 try{
                     const response = await predictModel(selectedModelId, XT.X, XT.T)
-                    console.log(response)
+                    const predicted_arr = JSON.parse(response.output);
+                    setPredOutput(response);
+                    const updatedRowData = rowData.map((row, rowIndex) => {
+                        const newColumns = {};
+                        predicted_arr[rowIndex].forEach((value, colIndex) => {
+                          newColumns[`Predicted Output${colIndex + 1}`] = value;
+                        });
+                        return {
+                          ...row,
+                          ...newColumns
+                        };
+                    });
+                    const updatedHeader = Object.keys(updatedRowData[0]);
+                    const colDef = updatedHeader.map((col) => ({
+                        field: col,
+                        header: col,
+                        flex: 1.0,
+                        valueFormatter: (params) => {
+                            return parseFloat(params.value).toFixed(10);  // Show 10 decimal places
+                        }
+                    }))
+                    setRowData(updatedRowData);
+                    setColumnDefs(colDef);
+
+                    const scatterData = updatedRowData.map((row) => ({
+                        x: parseFloat(row[preDetail.tList.$values]),
+                        y: parseFloat(row["Predicted Output1"])
+                    }));
+
+                    setPlotResult(scatterData)
+
+                    setIsPredicted(prev => !prev);
+                    toast.success("运行结束！");
                 }
                 catch (error) {
                     toast.error(error.message)
@@ -98,22 +147,34 @@ export default function ModelPredict() {
     }
 
     async function handleToggle () {
-        setIsOpt1(prev => !prev)
+        if (selectedMode == "with"){
+            setIsOpt1(prev => !prev)
+        }
+        if (selectedMode == "without") {
+            setIsOpt1(true)
+            toast.warning("无目标预测不显示图标！")
+        }
     }
 
     async function handleSelectedDB (event) {
         setSelectedDbId(event.target.value)
         setIsDbSelected(true)
+        setIsModelLoaded(false)
+        setRefresh(refresh + 1)
     }
 
     async function handleSelectedModel (event) {
         setSelectedModelId(event.target.value)
         setIsModelSelected(true)
+        setIsModelLoaded(false)
+        setRefresh(refresh + 1)
     }
 
     async function handleSelectedMode (event) {
         setSelectedMode(event.target.value)
         setIsModeSelected(true)
+        setIsModelLoaded(false)
+        setRefresh(refresh + 1)
     }
 
     async function handleLoadingClick() {
@@ -127,6 +188,7 @@ export default function ModelPredict() {
         }
         if (selectedMode == "without") {
             setHeader(response.xList.$values);
+            setIsOpt1(true)
         }
         setTimeout(() => {
             setIsLoading(prev => !prev)
@@ -198,6 +260,16 @@ export default function ModelPredict() {
         }
         catch (error) {
             toast.error(error.message)
+        }
+    }
+
+    async function handleSaveGraphClick () {
+        if (chartImg) {
+            const base64Image = chartImg.toBase64Image(); // Generate the image when needed
+            const link = document.createElement('a');
+            link.href = base64Image;
+            link.download = 'result-chart.png';
+            link.click();
         }
     }
 
@@ -291,14 +363,15 @@ export default function ModelPredict() {
                             paginationPageSizeSelector={[5,10,20]}
                             rowSelection='multiple'
                             key={refresh}
+                            onGridReady={onGridReady}
                         />
                     </div>
                 :
                     <div className="box04" style={{ height: "63vh", width: '100%' }}>
-                        <LiveGraph
+                        <ScatterGraph
                             key={refresh}
-                            // setResult={setResult}
-                            // setChartImg={setChartImg}
+                            setResult={plotResult}
+                            setChartImg={setChartImg}
                         />
                     </div>
                 }
@@ -363,9 +436,47 @@ export default function ModelPredict() {
                                         onMouseEnter={(e) => (e.target.style.color = "black")}
                                         onMouseLeave={(e) => (e.target.style.color = "white")}
                                         onClick={handleStartPredictClick}
-                                        disabled={isLoading}
+                                        disabled={isPredicted}
                                     >开始预测</button>
-                                    <h4>测试结果：</h4>
+                                    {isPredicted && isModelLoaded && isFileLoaded ?
+                                        <>
+                                            {selectedMode == "with" &&
+                                                <>
+                                                    <h4>测试结果：</h4>
+                                                    <h4 className="result-output">{predOutput.result.toFixed(12)}</h4>
+                                                </>
+                                            }
+                                            
+                                            {isOpt1 ? 
+                                                <button 
+                                                    onClick={exportGridData}
+                                                    style={{ 
+                                                        backgroundColor: '#007bff',
+                                                        width: "70%",
+                                                        margin: "20px 0px 20px 0px",
+                                                        color: "white",
+                                                        transition:"background-color 0.3s ease"
+                                                    }}
+                                                    onMouseEnter={(e) => (e.target.style.color = "black")}
+                                                    onMouseLeave={(e) => (e.target.style.color = "white")}
+                                                >下载文档</button>
+                                            :
+                                                <button 
+                                                    onClick={handleSaveGraphClick}
+                                                    style={{ 
+                                                        backgroundColor: '#007bff',
+                                                        width: "70%",
+                                                        margin: "20px 0px 20px 0px",
+                                                        color: "white",
+                                                        transition:"background-color 0.3s ease"
+                                                    }}
+                                                    onMouseEnter={(e) => (e.target.style.color = "black")}
+                                                    onMouseLeave={(e) => (e.target.style.color = "white")}
+                                                >下载图标</button>
+                                            }    
+                                        </>
+                                        : <></>
+                                    }
                                 </div>
                             </div>  
                             :
@@ -373,8 +484,6 @@ export default function ModelPredict() {
                                 <h4>请先选择上传文档！</h4>
                             </div>
                         }
-                        
-     
                     </div>
                 }
             </div>
