@@ -138,7 +138,6 @@ export default function ModelBuild() {
         const response = await startTraining(selectedDb);
         setResult((prev) => ({ ...prev, testResult: response.testResult}))
 
-        console.log(response.af)
         setModel(JSON.parse(response.model))
         setAf(response.af)
 
@@ -149,16 +148,6 @@ export default function ModelBuild() {
 
     async function handleSaveModelClick () {
         setSaveDialog(prev => !prev);
-        // try {
-        //     const response = await saveModel(user.id, selectedDb, name, model.Matrices);
-
-        //     console.log(response);
-        //     toast.success("Save successfully!");
-        // }
-        // catch (error) {
-        //     console.log(error);
-        //     toast.error(error);
-        // }
     }
 
     return (

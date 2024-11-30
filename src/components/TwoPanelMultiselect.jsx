@@ -12,26 +12,6 @@ export default function TwoPanelMultiselect({ setIsEditB, xtCol, setXTCol, setIs
     const [tItems, setTItems] = useState(xtCol.tList.$values);
     const [pdId, setPdId] = useState(xtCol.id);
     const [done, setDone] = useState(false);
-
-    // useEffect(() => {
-    //     async function alterLS() {
-    //         const pdetail = JSON.parse(localStorage.getItem("pdetail"));
-    //         const data = {
-    //             ...pdetail,
-    //             xList: {
-    //                 $values: xItems
-    //             },
-    //             tList: {
-    //                 $values: tItems
-    //             }
-    //         }
-    //         console.log(data)
-    //         localStorage.setItem("pdetail",JSON.stringify(data));
-    //         setDone(prev => !prev);
-    //     }
-
-    //     alterLS()
-    // }, [done])
     
     // Move selected item to the other panel
     async function moveToT (item) {

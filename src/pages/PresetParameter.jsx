@@ -114,7 +114,6 @@ export default function PresetParameter() {
 
   async function handleSaveParamClick () {
     try {
-      console.log(modelParam)
       const response = await SaveModelParams(selectedDb, modelParam)
       toast.success("更新成功!")
     }

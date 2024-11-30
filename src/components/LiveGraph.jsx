@@ -50,8 +50,6 @@ export default function LiveGraph({ setResult, setChartImg }) {
     connection.off("ReceiveMessage"); // Clear any existing listeners
     // Listen for data from SignalR
     connection.on("ReceiveMessage", (newData) => {
-    //   console.log("New Data Received:", newData);
-
       if (!newData.end) {
         setData((prevData) => {
             const nextLabel = prevData.labels.length > 0 
